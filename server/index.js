@@ -64,7 +64,7 @@ embeddedEndpoints(apiRouter);
 
 const ORIGIN_DOMAIN_WHITELIST = ["venturatravel.org"];
 
-function onlyVenturaOrigin(request, response, next) {
+export function onlyVenturaOrigin(request, response, next) {
   const origin =
     request.headers.host ||
     request.headers.origin ||
@@ -85,7 +85,7 @@ if (process.env.NODE_ENV !== "development") {
   const { MetaGenerator } = require("./utils/boot/MetaGenerator");
   const IndexPage = new MetaGenerator();
 
-  app.use(onlyVenturaOrigin);
+  // app.use(onlyVenturaOrigin);
 
   app.use(
     express.static(path.resolve(__dirname, "public"), {

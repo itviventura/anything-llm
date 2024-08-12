@@ -64,7 +64,8 @@ embeddedEndpoints(apiRouter);
 
 const ORIGIN_DOMAIN_WHITELIST = ["venturatravel.org"];
 
-export function onlyVenturaOrigin(request, response, next) {
+/*
+function onlyVenturaOrigin(request, response, next) {
   const origin =
     request.headers.host ||
     request.headers.origin ||
@@ -80,6 +81,7 @@ export function onlyVenturaOrigin(request, response, next) {
     response.sendStatus(401);
   }
 }
+*/
 
 if (process.env.NODE_ENV !== "development") {
   const { MetaGenerator } = require("./utils/boot/MetaGenerator");

@@ -457,7 +457,7 @@ const KEY_MAPPING = {
     envKey: "GOOGLE_AUTH_CLIENT_ID",
     checks: [isNotEmpty],
   },
-  
+
   // TTS/STT Integration ENVS
   TextToSpeechProvider: {
     envKey: "TTS_PROVIDER",

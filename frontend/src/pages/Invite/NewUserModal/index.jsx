@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Invite from "@/models/invite";
 import paths from "@/utils/paths";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { AUTH_TOKEN, AUTH_USER } from "@/utils/constants";
 import System from "@/models/system";
 
 export default function NewUserModal() {
   const { code } = useParams();
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  const withSocialProvider = searchParams.get("withSocialProvider") === "true";
 
   const handleCreate = async (e) => {
     setError(null);
@@ -15,8 +19,19 @@ export default function NewUserModal() {
     const data = {};
     const form = new FormData(e.target);
     for (var [key, value] of form.entries()) data[key] = value;
-    const { success, error } = await Invite.acceptInvite(code, data);
+    const { success, error } = await Invite.acceptInvite(
+      code,
+      data,
+      withSocialProvider
+    );
     if (success) {
+      if (withSocialProvider) {
+        setMessage("Redirecting to Google login...");
+        setTimeout(() => {
+          window.location = paths.home();
+        }, 2000);
+        return;
+      }
       const { valid, user, token, message } = await System.requestToken(data);
       if (valid && !!token && !!user) {
         window.localStorage.setItem(AUTH_USER, JSON.stringify(user));
@@ -29,6 +44,16 @@ export default function NewUserModal() {
     }
     setError(error);
   };
+
+  if (message) {
+    return (
+      <div className="relative w-full max-w-2xl max-h-full">
+        <h3 className="text-2xl font-semibold text-white">
+          You are being redirected to login page...
+        </h3>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full max-w-2xl max-h-full">
@@ -46,35 +71,41 @@ export default function NewUserModal() {
                   htmlFor="username"
                   className="block mb-2 text-sm font-medium text-white"
                 >
-                  Username
+                  {withSocialProvider ? "Ventura Travel Email" : "Username"}
                 </label>
                 <input
                   name="username"
                   type="text"
                   className="bg-zinc-900 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="My username"
+                  placeholder={
+                    withSocialProvider
+                      ? "jhon.doe@venturatravel.org"
+                      : "Your username"
+                  }
                   minLength={2}
                   required={true}
                   autoComplete="off"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Password
-                </label>
-                <input
-                  name="password"
-                  type="password"
-                  className="bg-zinc-900 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Your password"
-                  required={true}
-                  minLength={8}
-                  autoComplete="off"
-                />
-              </div>
+              {!withSocialProvider && (
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block mb-2 text-sm font-medium text-white"
+                  >
+                    Password
+                  </label>
+                  <input
+                    name="password"
+                    type="password"
+                    className="bg-zinc-900 border border-gray-500 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="Your password"
+                    required={true}
+                    minLength={8}
+                    autoComplete="off"
+                  />
+                </div>
+              )}
               {error && <p className="text-red-400 text-sm">Error: {error}</p>}
               <p className="text-slate-200 text-xs md:text-sm">
                 After creating your account you will be able to login with these

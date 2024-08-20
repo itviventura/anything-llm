@@ -9,15 +9,15 @@ const System = {
     supportEmail: "anythingllm_support_email",
     customAppName: "anythingllm_custom_app_name",
   },
-  ping: async function () {
+  ping: async function() {
     return await fetch(`${API_BASE}/ping`)
       .then((res) => res.json())
       .then((res) => res?.online || false)
       .catch(() => false);
   },
-  totalIndexes: async function (slug = null) {
+  totalIndexes: async function(slug = null) {
     const url = new URL(`${fullApiUrl()}/system/system-vectors`);
-    if (!!slug) url.searchParams.append("slug", encodeURIComponent(slug));
+    if (slug) url.searchParams.append("slug", encodeURIComponent(slug));
     return await fetch(url.toString(), {
       headers: baseHeaders(),
     })
@@ -28,7 +28,7 @@ const System = {
       .then((res) => res.vectorCount)
       .catch(() => 0);
   },
-  keys: async function () {
+  keys: async function() {
     return await fetch(`${API_BASE}/setup-complete`)
       .then((res) => {
         if (!res.ok) throw new Error("Could not find setup information.");
@@ -37,7 +37,7 @@ const System = {
       .then((res) => res.results)
       .catch(() => null);
   },
-  localFiles: async function () {
+  localFiles: async function() {
     return await fetch(`${API_BASE}/system/local-files`, {
       headers: baseHeaders(),
     })
@@ -48,14 +48,14 @@ const System = {
       .then((res) => res.localFiles)
       .catch(() => null);
   },
-  needsAuthCheck: function () {
+  needsAuthCheck: function() {
     const lastAuthCheck = window.localStorage.getItem(AUTH_TIMESTAMP);
     if (!lastAuthCheck) return true;
     const expiresAtMs = Number(lastAuthCheck) + 60 * 5 * 1000; // expires in 5 minutes in ms
     return Number(new Date()) > expiresAtMs;
   },
 
-  checkAuth: async function (currentToken = null) {
+  checkAuth: async function(currentToken = null) {
     const valid = await fetch(`${API_BASE}/system/check-token`, {
       headers: baseHeaders(currentToken),
     })
@@ -65,7 +65,7 @@ const System = {
     window.localStorage.setItem(AUTH_TIMESTAMP, Number(new Date()));
     return valid;
   },
-  requestToken: async function (body) {
+  requestToken: async function(body) {
     return await fetch(`${API_BASE}/request-token`, {
       method: "POST",
       body: JSON.stringify({ ...body }),
@@ -79,7 +79,7 @@ const System = {
         return { valid: false, message: e.message };
       });
   },
-  socialLogin: async function (body, provider) {
+  socialLogin: async function(body, provider) {
     return await fetch(`${API_BASE}/social-login/${provider}`, {
       method: "POST",
       body: JSON.stringify({ ...body }),
@@ -90,10 +90,11 @@ const System = {
       })
       .then((res) => res)
       .catch((e) => {
+        console.error(e);
         return { valid: false, message: e.message };
       });
   },
-  recoverAccount: async function (username, recoveryCodes) {
+  recoverAccount: async function(username, recoveryCodes) {
     return await fetch(`${API_BASE}/system/recover-account`, {
       method: "POST",
       headers: baseHeaders(),
@@ -111,7 +112,7 @@ const System = {
         return { success: false, error: e.message };
       });
   },
-  resetPassword: async function (token, newPassword, confirmPassword) {
+  resetPassword: async function(token, newPassword, confirmPassword) {
     return await fetch(`${API_BASE}/system/reset-password`, {
       method: "POST",
       headers: baseHeaders(),
@@ -229,7 +230,7 @@ const System = {
         return false;
       });
   },
-  uploadPfp: async function (formData) {
+  uploadPfp: async function(formData) {
     return await fetch(`${API_BASE}/system/upload-pfp`, {
       method: "POST",
       body: formData,
@@ -244,7 +245,7 @@ const System = {
         return { success: false, error: e.message };
       });
   },
-  uploadLogo: async function (formData) {
+  uploadLogo: async function(formData) {
     return await fetch(`${API_BASE}/system/upload-logo`, {
       method: "POST",
       body: formData,
@@ -259,7 +260,7 @@ const System = {
         return { success: false, error: e.message };
       });
   },
-  fetchCustomFooterIcons: async function () {
+  fetchCustomFooterIcons: async function() {
     const cache = window.localStorage.getItem(this.cacheKeys.footerIcons);
     const { data, lastFetched } = cache
       ? safeJsonParse(cache, { data: [], lastFetched: 0 })
@@ -291,7 +292,7 @@ const System = {
     );
     return { footerData: newData, error: null };
   },
-  fetchSupportEmail: async function () {
+  fetchSupportEmail: async function() {
     const cache = window.localStorage.getItem(this.cacheKeys.supportEmail);
     const { email, lastFetched } = cache
       ? safeJsonParse(cache, { email: "", lastFetched: 0 })
@@ -322,7 +323,7 @@ const System = {
     return { email: supportEmail, error: null };
   },
 
-  fetchCustomAppName: async function () {
+  fetchCustomAppName: async function() {
     const cache = window.localStorage.getItem(this.cacheKeys.customAppName);
     const { appName, lastFetched } = cache
       ? safeJsonParse(cache, { appName: "", lastFetched: 0 })
@@ -356,7 +357,7 @@ const System = {
     );
     return { appName: customAppName, error: null };
   },
-  fetchLogo: async function () {
+  fetchLogo: async function() {
     return await fetch(`${API_BASE}/system/logo`, {
       method: "GET",
       cache: "no-cache",
@@ -375,7 +376,7 @@ const System = {
         return { isCustomLogo: false, logoURL: null };
       });
   },
-  fetchPfp: async function (id) {
+  fetchPfp: async function(id) {
     return await fetch(`${API_BASE}/system/pfp/${id}`, {
       method: "GET",
       cache: "no-cache",
@@ -391,7 +392,7 @@ const System = {
         return null;
       });
   },
-  removePfp: async function (id) {
+  removePfp: async function(id) {
     return await fetch(`${API_BASE}/system/remove-pfp`, {
       method: "DELETE",
       headers: baseHeaders(),
@@ -406,7 +407,7 @@ const System = {
       });
   },
 
-  isDefaultLogo: async function () {
+  isDefaultLogo: async function() {
     return await fetch(`${API_BASE}/system/is-default-logo`, {
       method: "GET",
       cache: "no-cache",
@@ -421,7 +422,7 @@ const System = {
         return null;
       });
   },
-  removeCustomLogo: async function () {
+  removeCustomLogo: async function() {
     return await fetch(`${API_BASE}/system/remove-logo`, {
       headers: baseHeaders(),
     })
@@ -434,7 +435,7 @@ const System = {
         return { success: false, error: e.message };
       });
   },
-  getWelcomeMessages: async function () {
+  getWelcomeMessages: async function() {
     return await fetch(`${API_BASE}/system/welcome-messages`, {
       method: "GET",
       cache: "no-cache",
@@ -450,7 +451,7 @@ const System = {
         return null;
       });
   },
-  setWelcomeMessages: async function (messages) {
+  setWelcomeMessages: async function(messages) {
     return fetch(`${API_BASE}/system/set-welcome-messages`, {
       method: "POST",
       headers: baseHeaders(),
@@ -467,7 +468,7 @@ const System = {
         return { success: false, error: e.message };
       });
   },
-  getApiKeys: async function () {
+  getApiKeys: async function() {
     return fetch(`${API_BASE}/system/api-keys`, {
       method: "GET",
       headers: baseHeaders(),
@@ -483,7 +484,7 @@ const System = {
         return { apiKey: null, error: e.message };
       });
   },
-  generateApiKey: async function () {
+  generateApiKey: async function() {
     return fetch(`${API_BASE}/system/generate-api-key`, {
       method: "POST",
       headers: baseHeaders(),
@@ -499,7 +500,7 @@ const System = {
         return { apiKey: null, error: e.message };
       });
   },
-  deleteApiKey: async function () {
+  deleteApiKey: async function() {
     return fetch(`${API_BASE}/system/api-key`, {
       method: "DELETE",
       headers: baseHeaders(),
@@ -510,14 +511,14 @@ const System = {
         return false;
       });
   },
-  customModels: async function (
+  customModels: async function(
     provider,
     apiKey = null,
     basePath = null,
     timeout = null
   ) {
     const controller = new AbortController();
-    if (!!timeout) {
+    if (timeout) {
       setTimeout(() => {
         controller.abort("Request timed out.");
       }, timeout);
@@ -620,7 +621,7 @@ const System = {
   },
   dataConnectors: DataConnector,
 
-  getSlashCommandPresets: async function () {
+  getSlashCommandPresets: async function() {
     return await fetch(`${API_BASE}/system/slash-command-presets`, {
       method: "GET",
       headers: baseHeaders(),
@@ -636,7 +637,7 @@ const System = {
       });
   },
 
-  createSlashCommandPreset: async function (presetData) {
+  createSlashCommandPreset: async function(presetData) {
     return await fetch(`${API_BASE}/system/slash-command-presets`, {
       method: "POST",
       headers: baseHeaders(),
@@ -655,7 +656,7 @@ const System = {
       });
   },
 
-  updateSlashCommandPreset: async function (presetId, presetData) {
+  updateSlashCommandPreset: async function(presetId, presetData) {
     return await fetch(`${API_BASE}/system/slash-command-presets/${presetId}`, {
       method: "POST",
       headers: baseHeaders(),
@@ -673,7 +674,7 @@ const System = {
       });
   },
 
-  deleteSlashCommandPreset: async function (presetId) {
+  deleteSlashCommandPreset: async function(presetId) {
     return await fetch(`${API_BASE}/system/slash-command-presets/${presetId}`, {
       method: "DELETE",
       headers: baseHeaders(),

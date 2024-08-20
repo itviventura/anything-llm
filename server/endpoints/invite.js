@@ -33,6 +33,7 @@ function inviteEndpoints(app) {
 
   app.post("/invite/:code", async (request, response) => {
     try {
+      const { withSocialProvider } = request.query;
       const { code } = request.params;
       const { username, password } = reqBody(request);
       const invite = await Invite.get({ code });
@@ -43,11 +44,15 @@ function inviteEndpoints(app) {
         return;
       }
 
-      const { user, error } = await User.create({
+      const data = {
         username,
         password,
         role: "default",
-      });
+      };
+      const { user, error } = await (withSocialProvider
+        ? User.createWithSocialProvider(data)
+        : User.create(data));
+
       if (!user) {
         console.error("Accepting invite:", error);
         response

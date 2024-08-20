@@ -3,10 +3,14 @@ import { titleCase } from "text-case";
 import Admin from "@/models/admin";
 import { Trash } from "@phosphor-icons/react";
 
-export default function InviteRow({ invite }) {
+export default function InviteRow({ invite, allowSocialProvider = false }) {
   const rowRef = useRef(null);
   const [status, setStatus] = useState(invite.status);
-  const [copied, setCopied] = useState(false);
+  const [[regularUserCopied, socialProviderCopied], setCopied] = useState([
+    false,
+    false,
+  ]); // [userPass, socialProvider];
+
   const handleDelete = async () => {
     if (
       !window.confirm(
@@ -20,23 +24,26 @@ export default function InviteRow({ invite }) {
     setStatus("disabled");
     await Admin.disableInvite(invite.id);
   };
-  const copyInviteLink = () => {
+  const copyInviteLink = (withSocialProvider) => {
     if (!invite) return false;
     window.navigator.clipboard.writeText(
-      `${window.location.origin}/accept-invite/${invite.code}`
+      `${window.location.origin}/accept-invite/${invite.code}?withSocialProvider=${withSocialProvider}`
     );
-    setCopied(true);
+    setCopied([
+      withSocialProvider ? regularUserCopied : true,
+      withSocialProvider ? true : socialProviderCopied,
+    ]);
   };
 
   useEffect(() => {
     function resetStatus() {
-      if (!copied) return false;
+      if (!regularUserCopied || !socialProviderCopied) return false;
       setTimeout(() => {
-        setCopied(false);
+        setCopied([false, false]);
       }, 3000);
     }
     resetStatus();
-  }, [copied]);
+  }, [regularUserCopied, socialProviderCopied]);
 
   return (
     <>
@@ -59,13 +66,26 @@ export default function InviteRow({ invite }) {
         <td className="px-6 py-4 flex items-center gap-x-6">
           {status === "pending" && (
             <>
-              <button
-                onClick={copyInviteLink}
-                disabled={copied}
-                className="font-medium text-blue-300 rounded-lg hover:text-white hover:text-opacity-60 hover:underline"
-              >
-                {copied ? "Copied" : "Copy Invite Link"}
-              </button>
+              <div className="flex flex-col gap-2 place-items-start">
+                <button
+                  onClick={() => copyInviteLink(false)}
+                  disabled={regularUserCopied}
+                  className="font-medium text-blue-300 rounded-lg hover:text-white hover:text-opacity-60 hover:underline"
+                >
+                  {regularUserCopied
+                    ? "Copied"
+                    : "Copy Invite Link with user/password"}
+                </button>
+                <button
+                  onClick={() => copyInviteLink(true)}
+                  disabled={socialProviderCopied}
+                  className="font-medium text-blue-300 rounded-lg hover:text-white hover:text-opacity-60 hover:underline"
+                >
+                  {socialProviderCopied
+                    ? "Copied"
+                    : "Copy Invite Link with Social Login"}
+                </button>
+              </div>
               <td className="px-6 py-4 flex items-center gap-x-6">
                 <button
                   onClick={handleDelete}

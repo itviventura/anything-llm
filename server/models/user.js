@@ -77,11 +77,12 @@ const User = {
     }
   },
 
-  createWithSocialProvider: async function ({ username }) {
+  createWithSocialProvider: async function ({ username, role = "default" }) {
     try {
       const user = await prisma.users.create({
         data: {
           username,
+          role,
           use_social_provider: true,
         },
       });

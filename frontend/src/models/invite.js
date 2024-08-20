@@ -11,11 +11,18 @@ const Invite = {
         return { invite: null, error: e.message };
       });
   },
-  acceptInvite: async (inviteCode, newUserInfo = {}) => {
-    return await fetch(`${API_BASE}/invite/${inviteCode}`, {
-      method: "POST",
-      body: JSON.stringify(newUserInfo),
-    })
+  acceptInvite: async (
+    inviteCode,
+    newUserInfo = {},
+    withSocialProvider = false
+  ) => {
+    return await fetch(
+      `${API_BASE}/invite/${inviteCode}?withSocialProvider=${withSocialProvider}`,
+      {
+        method: "POST",
+        body: JSON.stringify(newUserInfo),
+      }
+    )
       .then((res) => res.json())
       .catch((e) => {
         console.error(e);

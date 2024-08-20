@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { X } from "@phosphor-icons/react";
 import Admin from "@/models/admin";
 import Workspace from "@/models/workspace";
+import System from "@/models/system";
 
 export default function NewInviteModal({ closeModal }) {
   const [invite, setInvite] = useState(null);
@@ -9,6 +10,8 @@ export default function NewInviteModal({ closeModal }) {
   const [copied, setCopied] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState([]);
+  const [settings, setSettings] = useState(null);
+  const [withSocialProvider, setWithSocialProvider] = useState(false);
 
   const handleCreate = async (e) => {
     setError(null);
@@ -18,13 +21,13 @@ export default function NewInviteModal({ closeModal }) {
       role: null,
       workspaceIds: selectedWorkspaceIds,
     });
-    if (!!newInvite) setInvite(newInvite);
+    if (newInvite) setInvite(newInvite);
     setError(error);
   };
   const copyInviteLink = () => {
     if (!invite) return false;
     window.navigator.clipboard.writeText(
-      `${window.location.origin}/accept-invite/${invite.code}`
+      `${window.location.origin}/accept-invite/${invite.code}?withSocialProvider=${withSocialProvider}`
     );
     setCopied(true);
   };
@@ -57,6 +60,17 @@ export default function NewInviteModal({ closeModal }) {
     fetchWorkspaces();
   }, []);
 
+  useEffect(() => {
+    async function fetchSettings() {
+      const _settings = await System.keys();
+      setSettings(_settings);
+      if (_settings?.GoogleAuthClientId) {
+        setWithSocialProvider(true);
+      }
+    }
+    fetchSettings();
+  }, [setWithSocialProvider]);
+
   return (
     <div className="relative w-[500px] max-w-2xl max-h-full overflow-auto">
       <div className="relative bg-main-gradient rounded-lg shadow">
@@ -80,7 +94,7 @@ export default function NewInviteModal({ closeModal }) {
               {invite && (
                 <input
                   type="url"
-                  defaultValue={`${window.location.origin}/accept-invite/${invite.code}`}
+                  defaultValue={`${window.location.origin}/accept-invite/${invite.code}?withSocialProvider=${withSocialProvider}`}
                   disabled={true}
                   className="rounded-lg px-4 py-2 text-white bg-zinc-900 border border-gray-500/50"
                 />
@@ -93,6 +107,34 @@ export default function NewInviteModal({ closeModal }) {
               </p>
             </div>
           </div>
+
+          {settings?.GoogleAuthClientId && !invite && (
+            <div className="p-6 flex w-full justify-between">
+              <div className="w-full">
+                <div className="flex flex-col gap-y-1  mb-2">
+                  <label
+                    htmlFor="social-login"
+                    className="text-sm font-medium text-white"
+                  >
+                    Allow Social Login
+                  </label>
+                  <p className="text-white/60 text-xs">
+                    Enable this option to allow users to sign up using their
+                    Ventura Travel email.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-y-2">
+                  <SocialLoginOption
+                    selected={withSocialProvider}
+                    toggleSelection={() =>
+                      setWithSocialProvider((prev) => !prev)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {workspaces.length > 0 && !invite && (
             <div className="p-6 flex w-full justify-between">
@@ -183,6 +225,33 @@ function WorkspaceOption({ workspace, selected, toggleSelection }) {
       ></div>
       <div className="text-white text-sm font-medium font-['Plus Jakarta Sans'] leading-tight">
         {workspace.name}
+      </div>
+    </button>
+  );
+}
+
+export function SocialLoginOption({ selected, toggleSelection }) {
+  return (
+    <button
+      type="button"
+      onClick={toggleSelection}
+      className={`transition-all duration-300 w-full h-11 p-2.5 bg-white/10  flex justify-start items-center gap-2.5 cursor-pointer border border-transparent ${
+        selected ? "border-white border-opacity-40" : "border-none "
+      } hover:border-white/60`}
+    >
+      <input
+        type="checkbox"
+        value={selected}
+        checked={selected}
+        className="hidden"
+      />
+      <div
+        className={`w-4 h-4 rounded-sm border-2 border-white mr-2 ${
+          selected ? "bg-white" : ""
+        }`}
+      ></div>
+      <div className="text-white text-sm font-medium font-['Plus Jakarta Sans'] leading-tight">
+        {selected ? "Enabled" : "Disabled"}
       </div>
     </button>
   );

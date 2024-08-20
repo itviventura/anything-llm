@@ -1,3 +1,4 @@
+.zed/
 v-env
 .env
 !.env.example

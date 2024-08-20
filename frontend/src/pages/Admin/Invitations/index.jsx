@@ -11,9 +11,13 @@ import NewInviteModal from "./NewInviteModal";
 import { useModal } from "@/hooks/useModal";
 import ModalWrapper from "@/components/ModalWrapper";
 import CTAButton from "@/components/lib/CTAButton";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function AdminInvites() {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const settings = useSettings();
+  const allowSocialProviders = !!settings?.GoogleAuthClientId;
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-sidebar flex">
@@ -40,7 +44,7 @@ export default function AdminInvites() {
               Link
             </CTAButton>
           </div>
-          <InvitationsContainer />
+          <InvitationsContainer allowSocialProviders={allowSocialProviders} />
         </div>
         <ModalWrapper isOpen={isOpen}>
           <NewInviteModal closeModal={closeModal} />
@@ -50,7 +54,7 @@ export default function AdminInvites() {
   );
 }
 
-function InvitationsContainer() {
+function InvitationsContainer({ allowSocialProvider }) {
   const darkMode = usePrefersDarkMode();
   const [loading, setLoading] = useState(true);
   const [invites, setInvites] = useState([]);
@@ -101,7 +105,11 @@ function InvitationsContainer() {
       </thead>
       <tbody>
         {invites.map((invite) => (
-          <InviteRow key={invite.id} invite={invite} />
+          <InviteRow
+            key={invite.id}
+            invite={invite}
+            allowSocialProvider={allowSocialProvider}
+          />
         ))}
       </tbody>
     </table>

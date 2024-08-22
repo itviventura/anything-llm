@@ -18,9 +18,11 @@ const { verifyPayloadIntegrity } = require("./middleware/verifyIntegrity");
 const app = express();
 
 app.use(cors({ origin: true }));
+
+const FILE_LIMIT = "3GB";
 app.use(
-  bodyParser.text({ limit: "50mb" }),
-  bodyParser.json({ limit: "50mb" }),
+  bodyParser.text({ limit: FILE_LIMIT }),
+  bodyParser.json({ limit: FILE_LIMIT }),
   bodyParser.urlencoded({
     extended: true,
   })

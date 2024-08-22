@@ -62,32 +62,9 @@ developerEndpoints(app, apiRouter);
 // Externally facing embedder endpoints
 embeddedEndpoints(apiRouter);
 
-const ORIGIN_DOMAIN_WHITELIST = ["venturatravel.org"];
-
-/*
-function onlyVenturaOrigin(request, response, next) {
-  const origin =
-    request.headers.host ||
-    request.headers.origin ||
-    request.headers["x-forwarded-for"];
-
-  const ok = ORIGIN_DOMAIN_WHITELIST.some((allowed) =>
-    origin.includes(allowed)
-  );
-  if (ok) {
-    response.header("X-FRAME-OPTIONS", "ALLOW-FROM " + request.query.domain);
-    next();
-  } else {
-    response.sendStatus(401);
-  }
-}
-*/
-
 if (process.env.NODE_ENV !== "development") {
   const { MetaGenerator } = require("./utils/boot/MetaGenerator");
   const IndexPage = new MetaGenerator();
-
-  // app.use(onlyVenturaOrigin);
 
   app.use(
     express.static(path.resolve(__dirname, "public"), {

@@ -19,8 +19,8 @@ const app = express();
 
 app.use(cors({ origin: true }));
 app.use(
-  bodyParser.text(),
-  bodyParser.json(),
+  bodyParser.text({ limit: "50mb" }),
+  bodyParser.json({ limit: "50mb" }),
   bodyParser.urlencoded({
     extended: true,
   })

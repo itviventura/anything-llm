@@ -6,20 +6,9 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family:
-    "plus-jakarta-sans",
-    -apple-system,
-    BlinkMacSystemFont,
-    Segoe UI,
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    Fira Sans,
-    Droid Sans,
-    Helvetica Neue,
-    sans-serif;
+  font-family: "Source Sans Pro", Helvetica;
   background-color: white;
+  color: rgb(97, 97, 97);
 }
 
 a {
@@ -33,12 +22,6 @@ a {
 
 .g327 {
   border-color: #302f30;
-}
-
-@font-face {
-  font-family: "plus-jakarta-sans";
-  src: url("../public/fonts/PlusJakartaSans.ttf");
-  font-display: swap;
 }
 
 .grr {
@@ -397,7 +380,7 @@ dialog::backdrop {
 }
 
 .rti--container {
-  @apply !bg-zinc-900 !text-white !placeholder-white !placeholder-opacity-60 !text-sm !rounded-lg !p-2.5;
+  @apply !text-sm !rounded-lg !p-2.5;
 }
 
 .tooltip {
@@ -612,15 +595,19 @@ dialog::backdrop {
 
 .markdown strong {
   font-weight: 600;
-  color: #fff;
+  color: black;
 }
 
 .file-row:nth-child(even) {
-  @apply bg-dark-highlight;
+  @apply bg-dark-highlight/30;
 }
 
 .file-row:nth-child(odd) {
-  @apply bg-[#2C2C2C];
+  @apply bg-dark-highlight/60;
+}
+
+.file-row:hover {
+  @apply bg-dark-highlight !important;
 }
 
 .file-row.selected:nth-child(even) {
@@ -655,7 +642,7 @@ does not extend the close button beyond the viewport. */
 .white-scrollbar {
   overflow-y: scroll;
   scrollbar-width: thin;
-  scrollbar-color: #ffffff #18181b;
+  scrollbar-color: #ffffff #cccccc;
   margin-right: 8px;
 }
 
@@ -666,12 +653,12 @@ does not extend the close button beyond the viewport. */
 }
 
 .white-scrollbar::-webkit-scrollbar-track {
-  background-color: #18181b;
+  background-color: #0000;
   margin-right: 8px;
 }
 
 .white-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #ffffff;
+  background-color: #0000001a;
   border-radius: 4px;
   border: 2px solid #18181b;
 }
@@ -802,4 +789,228 @@ does not extend the close button beyond the viewport. */
 
 .katex-mathml {
   font-size: 20px;
+}
+
+/* ********************* */
+/*  Hacky ventura styles */
+/* ********************* */
+
+:root {
+  --ventura-primary-color: #61aefc;
+  --ventura-soft-primary-color: #4fc3f726;
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-white\/80 {
+  color: rgb(0 0 0 / 0.8) !important;
+}
+
+.text-white\/50 {
+  color: rgb(0 0 0 / 0.5) !important;
+}
+
+.text-white\/60 {
+  color: rgb(0 0 0 / 0.6) !important;
+}
+
+.text-white\/70 {
+  color: rgb(0 0 0 / 0.7) !important;
+}
+
+.text-white\/90 {
+  color: rgb(0 0 0 / 0.9) !important;
+}
+
+.text-slate-100 {
+  @apply text-slate-400;
+}
+
+.text-slate-200 {
+  @apply text-slate-500;
+}
+
+.text-slate-300 {
+  @apply text-slate-600;
+}
+
+/* .hover\:text-white {
+  color: rgb(0 0 0 / 0.8) !important;
+} */
+
+.hover\:text-white\/75 {
+  color: rgb(0 0 0 / 0.75) !important;
+}
+
+.text-zinc-300 {
+  color: inherit !important;
+}
+
+.text-zinc-200 {
+  --tw-text-opacity: 1;
+  color: rgb(20 20 20 / var(--tw-text-opacity)) !important;
+}
+
+.bg-zinc-900 {
+  /* background-color: rgb(237 248 255) !important; */
+  background-color: rgb(249 253 255) !important;
+}
+
+/* ::placeholder {
+  color: #a0aec0 !important;
+} */
+
+.placeholder\:text-white\/20 {
+  color: #718096 !important;
+}
+
+#slash-cmd-btn img {
+  filter: invert() !important;
+}
+
+.hover\:bg-zinc-900\/90:hover {
+  background-color: rgb(24 24 27 / 0.4) !important;
+}
+
+button.text-sidebar {
+  background-color: var(--ventura-primary-color) !important;
+}
+
+.bg-zinc-600.rounded-lg:has(svg) {
+  background-color: var(--ventura-primary-color) !important;
+}
+svg.text-slate-100 {
+  color: white;
+}
+
+div[role="list"] > div > div.border-white,
+div[role="list"] > div > div.border-slate-300 {
+  border-color: var(--ventura-primary-color) !important;
+}
+
+button > svg.text-slate-300 {
+  color: #1e1b1b;
+}
+
+div.absolute.w-fit.bg-zinc-900 > button.text-slate-300 {
+  color: black;
+}
+
+div.absolute.w-fit.bg-zinc-900
+  > button.text-slate-300.hover\:bg-slate-500\/20:hover {
+  background: #d7e5ef;
+}
+
+div.absolute.w-fit.bg-zinc-900
+  > button.text-slate-300.hover\:text-red-100:hover.hover:\bg-red-500\/20 {
+  @apply: hover:bg-red-100;
+}
+
+.bg-white\/20.rounded {
+  background-color: rgb(175 175 175 / 20%) !important;
+}
+
+.bg-sidebar a.text-white {
+  border: none;
+  border-radius: 30px;
+  color: rgb(97, 97, 97);
+}
+
+.bg-workspace-item-selected-gradient {
+  border: none;
+  border-radius: 30px;
+  color: var(--ventura-primary-color) !important;
+}
+
+.bg-workspace-item-selected-gradient p.leading-loose.text-white {
+  color: var(--ventura-primary-color) !important;
+}
+
+.border-white {
+  border-color: rgb(97 97 97);
+}
+
+button.hover\:bg-slate-200 {
+  @apply border-[var(--ventura-primary-color)] bg-[var(--ventura-soft-primary-color)] hover:bg-slate-300;
+}
+
+button.rounded-lg.bg-primary-button {
+  color: white !important;
+}
+
+button.rounded-lg:has(> svg).text-red-300,
+button.rounded-lg:has(> svg).hover\:bg-sidebar-gradient {
+  @apply text-red-700;
+}
+
+button.rounded-lg.text-white.hover\:bg-stone-900 {
+  @apply hover:bg-stone-300;
+}
+button[type="submit"]:not(> svg) {
+  background-color: var(--ventura-primary-color) !important;
+  color: white;
+}
+button[type="submit"]:not(> svg):hover {
+  background-color: rgb(63, 142, 222) !important;
+  color: white;
+}
+
+button.text-blue-300.rounded-lg.hover\:text-white.hover\:text-opacity-60.hover\:underline {
+  @apply text-blue-500;
+}
+
+button:has(input[type="checkbox"]),
+button:has(input[type="radio"]) {
+  @apply hover:border-[var(--ventura-primary-color)] rounded-lg;
+}
+
+button > input[type="checkbox"]:checked + div.border-white {
+  background: var(--ventura-primary-color);
+}
+
+button > input[type="radio"] + div.bg-white {
+  background: var(--ventura-primary-color);
+}
+
+button.border-white\/40.text-white\/40.rounded-lg.bg-transparent.hover\:bg-red-500 {
+  @apply text-[#747474] hover:text-[white];
+}
+
+a.border-yellow-300.text-yellow-300\/80.hover\:text-white.hover\:bg-yellow-300\/75 {
+  @apply text-yellow-500/90 hover:text-black;
+}
+
+.bg-\[\#303237\] {
+  background: rgb(227 235 255) !important;
+}
+
+form .bg-white\/5 {
+  background: rgb(227 235 255) !important;
+}
+form span[data-tooltip-id^="default-skill-"] > div.rounded-full {
+  background: #7c7c7c !important;
+}
+
+.slide-down button.hover\:bg-\[\#3D4147\] {
+  @apply hover:bg-[var(--ventura-primary-color)] text-[white];
+}
+
+.react-loading-skeleton {
+  --base-color: #c5d0e6 !important;
+  --highlight-color: #cedcf0 !important;
+}
+
+.placeholder\:text-white\/20 {
+  @apply !placeholder-[#b3b3b3];
+}
+
+.placeholder\:text-white\/60 {
+  @apply !placeholder-[#b3b3b3];
+}
+
+code.bg-stone-800 {
+  @apply text-[#f1f1f1];
 }

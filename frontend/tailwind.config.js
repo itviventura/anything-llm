@@ -17,24 +17,24 @@ export default {
   theme: {
     extend: {
       rotate: {
-        "270": "270deg",
-        "360": "360deg"
+        270: "270deg",
+        360: "360deg"
       },
       colors: {
-        "black-900": "#141414",
-        accent: "#3D4147",
-        "sidebar-button": "#31353A",
-        sidebar: "#25272C",
-        "historical-msg-system": "rgba(255, 255, 255, 0.05);",
-        "historical-msg-user": "#2C2F35",
-        outline: "#4E5153",
-        "primary-button": "#46C8FF",
-        secondary: "#2C2F36",
-        "dark-input": "#18181B",
-        "mobile-onboarding": "#2C2F35",
-        "dark-highlight": "#1C1E21",
-        "dark-text": "#222628",
-        description: "#D2D5DB",
+        "black-900": "#FFFFFF",
+        accent: "#F0F4F8",
+        "sidebar-button": "#E5E7EB",
+        sidebar: "#F9FAFB",
+        "historical-msg-system": "rgba(0, 0, 0, 0.02);",
+        "historical-msg-user": "rgb(97 174 252 / 0.25)",
+        outline: "#D1D5DB",
+        "primary-button": "#61aefc",
+        secondary: "#61adfccc",
+        "dark-input": "#FFFFFF",
+        "mobile-onboarding": "#E5E7EB",
+        "dark-highlight": "#7ab2ea",
+        "dark-text": "#374151",
+        description: "#6B7280",
         "x-button": "#9CA3AF",
         royalblue: "#065986",
         purple: "#4A1FB8",
@@ -47,27 +47,29 @@ export default {
       },
       backgroundImage: {
         "preference-gradient":
-          "linear-gradient(180deg, #5A5C63 0%, rgba(90, 92, 99, 0.28) 100%);",
+          "linear-gradient(180deg, #E5E7EB 0%, rgba(229, 231, 235, 0.28) 100%);",
         "chat-msg-user-gradient":
-          "linear-gradient(180deg, #3D4147 0%, #2C2F35 100%);",
+          "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%);",
         "selected-preference-gradient":
-          "linear-gradient(180deg, #313236 0%, rgba(63.40, 64.90, 70.13, 0) 100%);",
-        "main-gradient": "linear-gradient(180deg, #3D4147 0%, #2C2F35 100%)",
-        "modal-gradient": "linear-gradient(180deg, #3D4147 0%, #2C2F35 100%)",
-        "sidebar-gradient": "linear-gradient(90deg, #5B616A 0%, #3F434B 100%)",
-        "login-gradient": "linear-gradient(180deg, #3D4147 0%, #2C2F35 100%)",
+          "linear-gradient(180deg, #E5E7EB 0%, rgba(243, 244, 246, 0) 100%);",
+        "main-gradient": "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
+        "modal-gradient": "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
+        "sidebar-gradient": "linear-gradient(90deg, #F9FAFB 0%, #E5E7EB 100%)",
+        "login-gradient": "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
         "menu-item-gradient":
-          "linear-gradient(90deg, #3D4147 0%, #2C2F35 100%)",
+          "linear-gradient(90deg, #F9FAFB 0%, #E5E7EB 100%)",
         "menu-item-selected-gradient":
-          "linear-gradient(90deg, #5B616A 0%, #3F434B 100%)",
+          "linear-gradient(90deg, #E5E7EB 0%, #F3F4F6 100%)",
         "workspace-item-gradient":
-          "linear-gradient(90deg, #3D4147 0%, #2C2F35 100%)",
+          "linear-gradient(90deg, #F9FAFB 0%, #E5E7EB 100%)",
         "workspace-item-selected-gradient":
-          "linear-gradient(90deg, #5B616A 0%, #3F434B 100%)",
-        "switch-selected": "linear-gradient(146deg, #5B616A 0%, #3F434B 100%)"
+          "linear-gradient(90deg, #4fc3f726 0%, #4fc3f726 100%)",
+        "switch-selected": "linear-gradient(146deg, #E5E7EB 0%, #F3F4F6 100%)"
       },
       fontFamily: {
         sans: [
+          "Source Sans Pro",
+          "Helvetica",
           "plus-jakarta-sans",
           "ui-sans-serif",
           "system-ui",
@@ -106,20 +108,20 @@ export default {
           "0%": {
             opacity: 1,
             transform: "scale(1)",
-            boxShadow: "0 0 0 rgba(255, 255, 255, 0.0)",
-            backgroundColor: "rgba(255, 255, 255, 0.0)"
+            boxShadow: "0 0 0 rgba(0, 0, 0, 0.0)",
+            backgroundColor: "rgba(0, 0, 0, 0.0)"
           },
           "50%": {
             opacity: 1,
             transform: "scale(1.1)",
-            boxShadow: "0 0 15px rgba(255, 255, 255, 0.2)",
-            backgroundColor: "rgba(255, 255, 255, 0.1)"
+            boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
+            backgroundColor: "rgba(0, 0, 0, 0.1)"
           },
           "100%": {
             opacity: 1,
             transform: "scale(1)",
-            boxShadow: "0 0 0 rgba(255, 255, 255, 0.0)",
-            backgroundColor: "rgba(255, 255, 255, 0.0)"
+            boxShadow: "0 0 0 rgba(0, 0, 0, 0.0)",
+            backgroundColor: "rgba(0, 0, 0, 0.0)"
           }
         }
       }

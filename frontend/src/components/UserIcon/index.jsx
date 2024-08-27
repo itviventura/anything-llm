@@ -11,19 +11,18 @@ export default function UserIcon({ size = 36, user, role }) {
 
   useEffect(() => {
     if (!divRef.current || (role === "user" && pfp)) return;
-
     const result = JAZZ(size, seed);
     divRef.current.appendChild(result);
   }, [pfp, role, seed, size]);
 
   return (
     <div className="relative w-[35px] h-[35px] rounded-full flex-shrink-0 overflow-hidden">
-      <div ref={divRef} />
-      {role === "user" && pfp && (
+      {/* <div ref={divRef} /> */}
+      {role === "assistant" && (
         <img
-          src={pfp}
+          src="https://storage.googleapis.com/media_ventura_travel/vbot-avatar.png"
           alt="User profile picture"
-          className="absolute top-0 left-0 w-full h-full object-cover rounded-full bg-white"
+          className="absolute top-0 left-0 w-full h-full object-cover rounded-full"
         />
       )}
     </div>

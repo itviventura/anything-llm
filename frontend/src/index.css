@@ -1014,3 +1014,7 @@ form span[data-tooltip-id^="default-skill-"] > div.rounded-full {
 code.bg-stone-800 {
   @apply text-[#f1f1f1];
 }
+
+.absolute.top-3.w-fit.h-fit.z-99 > button.uppercase.bg-sidebar-button {
+  display: none;
+}

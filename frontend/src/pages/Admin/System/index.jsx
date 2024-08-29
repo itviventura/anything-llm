@@ -198,8 +198,9 @@ export default function AdminSystem() {
                   Organization domain
                 </label>
                 <p className="text-xs leading-[18px] font-base text-white/60">
-                  Restrict access to a specific domain, or leave empty to allow
-                  login with any Google account.
+                  Restrict access to a specific domain (or multiple separated by
+                  comma ","), or leave empty to allow login with any Google
+                  account.
                 </p>
                 <div className="relative mt-2">
                   <input
@@ -215,7 +216,6 @@ export default function AdminSystem() {
                     }}
                     value={canLoginWithGoogle.allowedDomain}
                     min={1}
-                    max={300}
                     className="w-1/3 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-slate-200 dark:text-slate-200 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                 </div>

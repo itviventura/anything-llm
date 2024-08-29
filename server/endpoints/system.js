@@ -289,7 +289,7 @@ function systemEndpoints(app) {
       const allowedDomainList = allowedDomain.split(",").map((d) => d.trim());
       if (
         allowedDomain &&
-        allowedDomainList.some((d) => username.endsWith(d))
+        allowedDomainList.every((d) => !username.endsWith(d))
       ) {
         await EventLogs.logEvent(
           "failed_login_domain_not_allowed",

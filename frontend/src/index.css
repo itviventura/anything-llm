@@ -971,6 +971,10 @@ button > input[type="checkbox"]:checked + div.border-white {
   background: var(--ventura-primary-color);
 }
 
+form div[role="checkbox"] > div.bg-white.rounded-\[2px\] {
+  background: var(--ventura-primary-color);
+}
+
 button > input[type="radio"] + div.bg-white {
   background: var(--ventura-primary-color);
 }

@@ -3,7 +3,6 @@ const { WorkspaceThread } = require("../../../models/workspaceThread");
 const { Workspace } = require("../../../models/workspace");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const { reqBody, multiUserMode } = require("../../../utils/http");
-const { chatWithWorkspace } = require("../../../utils/chats");
 const {
   streamChatWithWorkspace,
   VALID_CHAT_MODE,
@@ -16,6 +15,7 @@ const {
 } = require("../../../utils/helpers/chat/responses");
 const { WorkspaceChats } = require("../../../models/workspaceChats");
 const { User } = require("../../../models/user");
+const { ApiChatHandler } = require("../../../utils/chats/apiChatHandler");
 
 function apiWorkspaceThreadEndpoints(app) {
   if (!app) return;
@@ -36,7 +36,6 @@ function apiWorkspaceThreadEndpoints(app) {
       #swagger.requestBody = {
         description: 'Optional userId associated with the thread',
         required: false,
-        type: 'object',
         content: {
           "application/json": {
             example: {
@@ -110,7 +109,6 @@ function apiWorkspaceThreadEndpoints(app) {
       /*
       #swagger.tags = ['Workspace Threads']
       #swagger.description = 'Update thread name by its unique slug.'
-      #swagger.path = '/v1/workspace/{slug}/thread/{threadSlug}/update'
       #swagger.parameters['slug'] = {
           in: 'path',
           description: 'Unique slug of workspace',
@@ -126,7 +124,6 @@ function apiWorkspaceThreadEndpoints(app) {
       #swagger.requestBody = {
         description: 'JSON object containing new name to update the thread.',
         required: true,
-        type: 'object',
         content: {
           "application/json": {
             example: {
@@ -300,6 +297,7 @@ function apiWorkspaceThreadEndpoints(app) {
           {
             workspaceId: workspace.id,
             thread_id: thread.id,
+            api_session_id: null, // Do not include API session chats.
             include: true,
           },
           null,
@@ -336,7 +334,6 @@ function apiWorkspaceThreadEndpoints(app) {
       #swagger.requestBody = {
         description: 'Send a prompt to the workspace thread and the type of conversation (query or chat).',
         required: true,
-        type: 'object',
         content: {
           "application/json": {
             example: {
@@ -406,13 +403,13 @@ function apiWorkspaceThreadEndpoints(app) {
         }
 
         const user = userId ? await User.get({ id: Number(userId) }) : null;
-        const result = await chatWithWorkspace(
+        const result = await ApiChatHandler.chatSync({
           workspace,
           message,
           mode,
           user,
-          thread
-        );
+          thread,
+        });
         await Telemetry.sendTelemetry("sent_chat", {
           LLMSelection: process.env.LLM_PROVIDER || "openai",
           Embedder: process.env.EMBEDDING_ENGINE || "inherit",
@@ -462,7 +459,6 @@ function apiWorkspaceThreadEndpoints(app) {
       #swagger.requestBody = {
         description: 'Send a prompt to the workspace thread and the type of conversation (query or chat).',
         required: true,
-        type: 'object',
         content: {
           "application/json": {
             example: {
@@ -478,6 +474,9 @@ function apiWorkspaceThreadEndpoints(app) {
           "text/event-stream": {
             schema: {
               type: 'array',
+              items: {
+                  type: 'string',
+              },
               example: [
                 {
                   id: 'uuid-123',
@@ -557,14 +556,14 @@ function apiWorkspaceThreadEndpoints(app) {
         response.setHeader("Connection", "keep-alive");
         response.flushHeaders();
 
-        await streamChatWithWorkspace(
+        await ApiChatHandler.streamChat({
           response,
           workspace,
           message,
           mode,
           user,
-          thread
-        );
+          thread,
+        });
         await Telemetry.sendTelemetry("sent_chat", {
           LLMSelection: process.env.LLM_PROVIDER || "openai",
           Embedder: process.env.EMBEDDING_ENGINE || "inherit",

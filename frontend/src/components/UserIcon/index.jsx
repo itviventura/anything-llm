@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import JAZZ from "@metamask/jazzicon";
+import React, { memo } from "react";
 import usePfp from "../../hooks/usePfp";
+import UserDefaultPfp from "./user.svg";
+import WorkspaceDefaultPfp from "./workspace.svg";
 
-export default function UserIcon({ size = 36, user, role }) {
+const UserIcon = memo(({ role }) => {
   const { pfp } = usePfp();
   const divRef = useRef(null);
   const seed = user?.uid
@@ -27,8 +28,25 @@ export default function UserIcon({ size = 36, user, role }) {
       )}
     </div>
   );
+});
+
+function RenderUserPfp({ pfp }) {
+  if (!pfp)
+    return (
+      <img
+        src={UserDefaultPfp}
+        alt="User profile picture"
+        className="rounded-full border-none"
+      />
+    );
+
+  return (
+    <img
+      src={pfp}
+      alt="User profile picture"
+      className="absolute top-0 left-0 w-full h-full object-cover rounded-full border-none"
+    />
+  );
 }
 
-function toPseudoRandomInteger(uidString = "") {
-  return uidString.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
+export default UserIcon;

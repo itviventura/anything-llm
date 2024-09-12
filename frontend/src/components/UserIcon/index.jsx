@@ -1,8 +1,7 @@
-import React, { memo, useRef } from "react";
+import React, { memo, useRef, useEffect } from "react";
 import usePfp from "../../hooks/usePfp";
-import UserDefaultPfp from "./user.svg";
 
-const UserIcon = memo(({ role, user }) => {
+const UserIcon = memo(({ size, role, user }) => {
   const { pfp } = usePfp();
   const divRef = useRef(null);
   const seed = user?.uid
@@ -28,5 +27,9 @@ const UserIcon = memo(({ role, user }) => {
     </div>
   );
 });
+
+function toPseudoRandomInteger(uidString = "") {
+  return uidString.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
 
 export default UserIcon;

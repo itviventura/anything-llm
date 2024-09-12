@@ -2,7 +2,7 @@ import React, { memo, useRef } from "react";
 import usePfp from "../../hooks/usePfp";
 import UserDefaultPfp from "./user.svg";
 
-const UserIcon = memo(({ role }) => {
+const UserIcon = memo(({ role, user }) => {
   const { pfp } = usePfp();
   const divRef = useRef(null);
   const seed = user?.uid
@@ -28,24 +28,5 @@ const UserIcon = memo(({ role }) => {
     </div>
   );
 });
-
-function RenderUserPfp({ pfp }) {
-  if (!pfp)
-    return (
-      <img
-        src={UserDefaultPfp}
-        alt="User profile picture"
-        className="rounded-full border-none"
-      />
-    );
-
-  return (
-    <img
-      src={pfp}
-      alt="User profile picture"
-      className="absolute top-0 left-0 w-full h-full object-cover rounded-full border-none"
-    />
-  );
-}
 
 export default UserIcon;

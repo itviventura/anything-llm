@@ -11,4 +11,3 @@ renameSync(
 console.log(
   `index.html renamed to _index.html so SSR of the index page can be assumed.`
 );
-console.log(`******** CU api key: ${import.meta.env.VITE_CLICKUP_API_KEY}`);

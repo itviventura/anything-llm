@@ -91,7 +91,7 @@ const Workspace = {
       });
   },
   deleteEditedChats: async function (slug = "", threadSlug = "", startingId) {
-    if (!!threadSlug)
+    if (threadSlug)
       return this.threads._deleteEditedChats(slug, threadSlug, startingId);
     return this._deleteEditedChats(slug, startingId);
   },
@@ -101,7 +101,7 @@ const Workspace = {
     chatId,
     newText
   ) {
-    if (!!threadSlug)
+    if (threadSlug)
       return this.threads._updateChatResponse(
         slug,
         threadSlug,
@@ -117,7 +117,7 @@ const Workspace = {
     chatHandler,
     attachments = [],
   }) {
-    if (!!threadSlug)
+    if (threadSlug)
       return this.threads.streamChat(
         { workspaceSlug, threadSlug },
         prompt,

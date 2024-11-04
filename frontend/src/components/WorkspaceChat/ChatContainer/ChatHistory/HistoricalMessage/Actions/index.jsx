@@ -1,6 +1,12 @@
 import React, { memo, useState } from "react";
 import useCopyText from "@/hooks/useCopyText";
-import { Check, ThumbsUp, ArrowsClockwise, Copy } from "@phosphor-icons/react";
+import {
+  Check,
+  ThumbsUp,
+  ThumbsDown,
+  ArrowsClockwise,
+  Copy,
+} from "@phosphor-icons/react";
 import { Tooltip } from "react-tooltip";
 import Workspace from "@/models/workspace";
 import { EditMessageAction } from "./EditMessage";
@@ -16,13 +22,21 @@ const Actions = ({
   forkThread,
   isEditing,
   role,
+  onBadFeedback,
 }) => {
   const [selectedFeedback, setSelectedFeedback] = useState(feedbackScore);
+  const [selectedBadFeedback, setSelectedBadFeedback] = useState(false);
   const handleFeedback = async (newFeedback) => {
     const updatedFeedback =
       selectedFeedback === newFeedback ? null : newFeedback;
     await Workspace.updateChatFeedback(chatId, slug, updatedFeedback);
     setSelectedFeedback(updatedFeedback);
+  };
+  const handleBadFeedback = async () => {
+    if (onBadFeedback) {
+      await onBadFeedback(chatId);
+      setSelectedBadFeedback(true);
+    }
   };
 
   return (
@@ -44,13 +58,27 @@ const Actions = ({
           )}
           {chatId && role !== "user" && !isEditing && (
             <FeedbackButton
-              isSelected={selectedFeedback === true}
+              isSelected={selectedFeedback}
               handleFeedback={() => handleFeedback(true)}
               tooltipId={`${chatId}-thumbs-up`}
               tooltipContent="Good response"
               IconComponent={ThumbsUp}
             />
           )}
+          {chatId &&
+            role !== "user" &&
+            !isEditing &&
+            onBadFeedback &&
+            !selectedBadFeedback && (
+              <FeedbackButton
+                isSelected={selectedBadFeedback === chatId}
+                disabled={selectedBadFeedback === chatId}
+                handleFeedback={() => handleBadFeedback()}
+                tooltipId={`${chatId}-thumbs-down`}
+                tooltipContent="Bad response"
+                IconComponent={ThumbsDown}
+              />
+            )}
           <ActionMenu
             chatId={chatId}
             forkThread={forkThread}
@@ -69,6 +97,7 @@ function FeedbackButton({
   tooltipId,
   tooltipContent,
   IconComponent,
+  disabled = false,
 }) {
   return (
     <div className="mt-3 relative">
@@ -78,6 +107,7 @@ function FeedbackButton({
         data-tooltip-content={tooltipContent}
         className="text-zinc-300"
         aria-label={tooltipContent}
+        disabled={disabled}
       >
         <IconComponent
           size={20}

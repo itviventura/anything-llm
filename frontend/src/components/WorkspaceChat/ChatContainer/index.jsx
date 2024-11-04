@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from "react";
+import useUser from "@/hooks/useUser";
+import showToast from "@/utils/toast";
 import ChatHistory from "./ChatHistory";
 import { CLEAR_ATTACHMENTS_EVENT, DndUploaderContext } from "./DnDWrapper";
 import PromptInput, { PROMPT_INPUT_EVENT } from "./PromptInput";
@@ -26,6 +28,10 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
   const [socketId, setSocketId] = useState(null);
   const [websocket, setWebsocket] = useState(null);
   const { files, parseAttachments } = useContext(DndUploaderContext);
+  const { user } = useUser();
+  const { createTask } = useCreateClickupTask(
+    import.meta.env.VITE_CLICKUP_API_KEY
+  );
 
   // Maintain state of message from whatever is in PromptInput
   const handleMessageChange = (event) => {
@@ -150,7 +156,7 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
       var _chatHistory = [...remHistory];
 
       // Override hook for new messages to now go to agents until the connection closes
-      if (!!websocket) {
+      if (websocket) {
         if (!promptMessage || !promptMessage?.userMessage) return false;
         websocket.send(
           JSON.stringify({
@@ -260,6 +266,48 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
     handleWSS();
   }, [socketId]);
 
+  const handleBadFeedback = async (chatId) => {
+    const systemChat = chatHistory.find(
+      (history) => history.chatId === chatId && history.role === "assistant"
+    );
+    const userChat = chatHistory.find(
+      (history) => history.chatId === chatId && history.role === "user"
+    );
+    if (systemChat && userChat) {
+      const formattedSources = systemChat.sources
+        .map((src, index) => {
+          return `
+Chunk Name N. ${index + 1}: ${src.chunkSource}
+Score: ${src.score}
+Text:
+\`\`\`html
+${src.text};
+\`\`\`
+\n\n`;
+        })
+        .join("\n");
+      let description = `
+### User Question
+${userChat.content}
+### vBot Answer:
+${systemChat.content}
+#### Sources
+
+${formattedSources}
+---
+
+Username: ${user?.username}
+  `;
+
+      createTask({
+        listId: "901507029452",
+        name: userChat.content,
+        description,
+      });
+      showToast("Feedback submitted successfully", "success");
+    }
+  };
+
   return (
     <div
       style={{ height: isMobile ? "100%" : "calc(100% - 32px)" }}
@@ -274,6 +322,7 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
           updateHistory={setChatHistory}
           regenerateAssistantMessage={regenerateAssistantMessage}
           hasAttachments={files.length > 0}
+          onBadFeedback={handleBadFeedback}
         />
         <PromptInput
           submit={handleSubmit}
@@ -287,3 +336,49 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
     </div>
   );
 }
+
+const useCreateClickupTask = (token) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [task, setTask] = useState(null);
+
+  const createTask = async ({ listId, name, description }) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `https://api.clickup.com/api/v2/list/${listId}/task`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            markdown_description: description,
+            status: "open",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        showToast(
+          "Failed to submit feedback. Try again Please. if the issue persist, contact IT.",
+          "error"
+        );
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setTask(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createTask, loading, error, task };
+};

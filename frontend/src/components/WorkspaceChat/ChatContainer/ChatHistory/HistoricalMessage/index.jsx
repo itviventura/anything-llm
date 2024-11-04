@@ -27,6 +27,7 @@ const HistoricalMessage = ({
   regenerateMessage,
   saveEditedMessage,
   forkThread,
+  onBadFeedback,
 }) => {
   const { isEditing } = useEditMessage({ chatId, role });
   const { isDeleted, completeDelete, onEndAnimation } = useWatchDeleteMessage({
@@ -39,7 +40,7 @@ const HistoricalMessage = ({
     element.style.height = element.scrollHeight + "px";
   };
 
-  if (!!error) {
+  if (error) {
     return (
       <div
         key={uuid}
@@ -120,6 +121,7 @@ const HistoricalMessage = ({
             isEditing={isEditing}
             role={role}
             forkThread={forkThread}
+            onBadFeedback={onBadFeedback}
           />
         </div>
         {role === "assistant" && <Citations sources={sources} />}

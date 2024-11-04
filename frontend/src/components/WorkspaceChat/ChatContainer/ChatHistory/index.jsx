@@ -18,6 +18,7 @@ export default function ChatHistory({
   updateHistory,
   regenerateAssistantMessage,
   hasAttachments = false,
+  onBadFeedback,
 }) {
   const { user } = useUser();
   const { threadSlug = null } = useParams();
@@ -238,6 +239,7 @@ export default function ChatHistory({
             isLastMessage={isLastBotReply}
             saveEditedMessage={saveEditedMessage}
             forkThread={forkThread}
+            onBadFeedback={onBadFeedback}
           />
         );
       })}

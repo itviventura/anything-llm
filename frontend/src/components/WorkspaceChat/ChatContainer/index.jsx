@@ -298,13 +298,11 @@ ${formattedSources}
 
 Username: ${user?.username}
   `;
-
       createTask({
         listId: "901507029452",
         name: userChat.content,
         description,
       });
-      showToast("Feedback submitted successfully", "success");
     }
   };
 
@@ -345,7 +343,7 @@ const useCreateClickupTask = (token) => {
   const createTask = async ({ listId, name, description }) => {
     if (!token) {
       showToast("Clickup API Key is missing", "error");
-      return;
+      return false;
     }
     setLoading(true);
     setError(null);
@@ -368,17 +366,18 @@ const useCreateClickupTask = (token) => {
       );
 
       if (!response.ok) {
-        showToast(
-          "Failed to submit feedback. Try again Please. if the issue persist, contact IT.",
-          "error"
-        );
         throw new Error(`Error: ${response.statusText}`);
       }
 
       const data = await response.json();
       setTask(data);
+      showToast("Feedback submitted successfully", "success");
     } catch (err) {
       setError(err.message);
+      showToast(
+        "Failed to submit feedback. Try again Please. if the issue persist, contact IT.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }

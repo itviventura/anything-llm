@@ -343,6 +343,10 @@ const useCreateClickupTask = (token) => {
   const [task, setTask] = useState(null);
 
   const createTask = async ({ listId, name, description }) => {
+    if (!token) {
+      showToast("Clickup API Key is missing", "error");
+      return;
+    }
     setLoading(true);
     setError(null);
 

@@ -5,6 +5,7 @@ import ChatHistory from "./ChatHistory";
 import { CLEAR_ATTACHMENTS_EVENT, DndUploaderContext } from "./DnDWrapper";
 import PromptInput, { PROMPT_INPUT_EVENT } from "./PromptInput";
 import Workspace from "@/models/workspace";
+import Clickup from "@/models/clickup";
 import handleChat, { ABORT_STREAM_EVENT } from "@/utils/chat";
 import { isMobile } from "react-device-detect";
 import { SidebarMobileHeader } from "../../Sidebar";
@@ -348,39 +349,23 @@ const useCreateClickupTask = (token) => {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(
-        `https://api.clickup.com/api/v2/list/${listId}/task`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            markdown_description: description,
-            status: "open",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setTask(data);
-      showToast("Feedback submitted successfully", "success");
-    } catch (err) {
-      setError(err.message);
-      showToast(
-        "Failed to submit feedback. Try again Please. if the issue persist, contact IT.",
-        "error"
-      );
-    } finally {
-      setLoading(false);
-    }
+    Clickup.createTask(listId, {
+      name,
+      markdown_description: description,
+      status: "open",
+    })
+      .then((task) => {
+        setTask(task);
+        showToast("Feedback submitted successfully", "success");
+      })
+      .catch((e) => {
+        setError(e.message);
+        showToast(
+          "Failed to submit feedback. Try again Please. if the issue persist, contact IT.",
+          "error"
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
   return { createTask, loading, error, task };

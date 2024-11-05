@@ -30,9 +30,7 @@ export default function ChatContainer({ workspace, knownHistory = [] }) {
   const [websocket, setWebsocket] = useState(null);
   const { files, parseAttachments } = useContext(DndUploaderContext);
   const { user } = useUser();
-  const { createTask } = useCreateClickupTask(
-    import.meta.env.VITE_CLICKUP_API_KEY
-  );
+  const { createTask } = useCreateClickupTask();
 
   // Maintain state of message from whatever is in PromptInput
   const handleMessageChange = (event) => {
@@ -336,16 +334,12 @@ Username: ${user?.username}
   );
 }
 
-const useCreateClickupTask = (token) => {
+const useCreateClickupTask = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [task, setTask] = useState(null);
 
   const createTask = async ({ listId, name, description }) => {
-    if (!token) {
-      showToast("Clickup API Key is missing", "error");
-      return false;
-    }
     setLoading(true);
     setError(null);
 
